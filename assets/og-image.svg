@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="glow" cx="30%" cy="90%" r="80%">
+      <stop offset="0%" stop-color="#e8622e" stop-opacity="0.45"/>
+      <stop offset="100%" stop-color="#e8622e" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#15100c"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <text x="80" y="330" font-family="Georgia, serif" font-size="96" fill="#f5ecdd">Bar Mubiti</text>
+  <text x="80" y="390" font-family="Arial, sans-serif" font-size="30" fill="#c99a4b">Bar &amp; Grill — Kigali</text>
+</svg>

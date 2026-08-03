@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin Dashboard — Bar Mubiti</title>
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+<div class="app-shell">
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">Bar Mubiti <span>Admin</span></div>
+    <button class="nav-item active" data-panel="overview">Overview</button>
+    <button class="nav-item" data-panel="business">Business Info</button>
+    <button class="nav-item" data-panel="hours">Opening Hours</button>
+    <button class="nav-item" data-panel="menu">Menu</button>
+    <button class="nav-item" data-panel="gallery">Gallery</button>
+    <button class="nav-item" data-panel="offers">Offers</button>
+    <button class="nav-item" data-panel="reservations">Reservations <span id="navResBadge"></span></button>
+    <button class="nav-item" data-panel="reviews">Reviews</button>
+    <button class="nav-item" data-panel="settings">Social &amp; Settings</button>
+    <div class="sidebar-foot">
+      <button class="btn btn-outline btn-block btn-sm" id="logoutBtn">Sign out</button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="topbar">
+      <div>
+        <h1 id="panelTitle">Overview</h1>
+        <div class="topbar-sub">Manage Bar Mubiti's website content</div>
+      </div>
+      <button class="hamburger" id="mobileNavToggle" aria-label="Open menu">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+
+    <div class="banner" id="setupBanner"></div>
+
+    <!-- OVERVIEW -->
+    <section class="panel active" id="panel-overview">
+      <div class="stat-grid" id="overviewStats"></div>
+      <div class="card">
+        <h3>Recent reservation requests</h3>
+        <p class="card-sub">The latest inquiries from your website</p>
+        <div id="overviewRecentReservations"><div class="skeleton"></div><div class="skeleton"></div></div>
+      </div>
+    </section>
+
+    <!-- BUSINESS INFO -->
+    <section class="panel" id="panel-business">
+      <div class="card">
+        <h3>Business details</h3>
+        <p class="card-sub">Shown across the homepage, footer and structured data.</p>
+        <form id="businessForm" class="form-inline">
+          <div class="field"><label>Business name</label><input name="name" required></div>
+          <div class="field"><label>Tagline (hero subtitle)</label><textarea name="tagline"></textarea></div>
+          <div class="field"><label>About description</label><textarea name="description"></textarea></div>
+          <div class="form-inline grid-2">
+            <div class="field"><label>Address</label><input name="address"></div>
+            <div class="field"><label>Phone</label><input name="phone" placeholder="0788 582 914"></div>
+          </div>
+          <div class="form-inline grid-2">
+            <div class="field"><label>WhatsApp number (with country code, digits only)</label><input name="whatsapp_phone" placeholder="250788582914"></div>
+            <div class="field"><label>Price range</label><input name="price_range"></div>
+          </div>
+          <div class="form-inline grid-2">
+            <div class="field"><label>Google rating (0–5)</label><input name="google_rating" type="number" step="0.1" min="0" max="5"></div>
+            <div class="field"><label>Google review count</label><input name="google_review_count" type="number" min="0"></div>
+          </div>
+          <button type="submit" class="btn btn-primary" style="justify-self:start;">Save business info</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- HOURS -->
+    <section class="panel" id="panel-hours">
+      <div class="card">
+        <h3>Opening hours</h3>
+        <p class="card-sub">Tap a day to edit. This also powers the "Open now" badge on your site.</p>
+        <div id="hoursListAdmin"><div class="skeleton"></div></div>
+      </div>
+    </section>
+
+    <!-- MENU -->
+    <section class="panel" id="panel-menu">
+      <div class="card">
+        <div class="toolbar">
+          <div>
+            <h3>Menu categories</h3>
+            <p class="card-sub">Add a category, then add items under it.</p>
+          </div>
+          <button class="btn btn-primary btn-sm" id="addCategoryBtn">+ Category</button>
+        </div>
+        <div class="tag-select" id="categoryTags"></div>
+      </div>
+      <div class="card">
+        <div class="toolbar">
+          <h3 id="menuItemsHeading">Items</h3>
+          <button class="btn btn-primary btn-sm" id="addMenuItemBtn">+ Item</button>
+        </div>
+        <div id="menuItemsList"><div class="skeleton"></div></div>
+      </div>
+    </section>
+
+    <!-- GALLERY -->
+    <section class="panel" id="panel-gallery">
+      <div class="card">
+        <div class="toolbar">
+          <div>
+            <h3>Gallery</h3>
+            <p class="card-sub">Photos of food, drinks and the venue. Shown on the website gallery.</p>
+          </div>
+          <label class="btn btn-primary btn-sm" for="galleryFileInput">+ Upload photo</label>
+          <input type="file" id="galleryFileInput" accept="image/*" style="display:none;">
+        </div>
+        <div class="upload-progress" id="galleryUploadStatus"></div>
+        <div id="galleryListAdmin"><div class="skeleton"></div></div>
+      </div>
+    </section>
+
+    <!-- OFFERS -->
+    <section class="panel" id="panel-offers">
+      <div class="card">
+        <div class="toolbar">
+          <div>
+            <h3>Offers &amp; promotions</h3>
+            <p class="card-sub">Shown as highlight cards under the menu.</p>
+          </div>
+          <button class="btn btn-primary btn-sm" id="addOfferBtn">+ Offer</button>
+        </div>
+        <div id="offersListAdmin"><div class="skeleton"></div></div>
+      </div>
+    </section>
+
+    <!-- RESERVATIONS -->
+    <section class="panel" id="panel-reservations">
+      <div class="card">
+        <div class="toolbar">
+          <div>
+            <h3>Reservation &amp; contact requests</h3>
+            <p class="card-sub">Submitted from the website's reservation form.</p>
+          </div>
+        </div>
+        <div id="reservationsList"><div class="skeleton"></div></div>
+      </div>
+    </section>
+
+    <!-- REVIEWS -->
+    <section class="panel" id="panel-reviews">
+      <div class="card">
+        <div class="toolbar">
+          <div>
+            <h3>Testimonials</h3>
+            <p class="card-sub">Featured reviews shown on the website. Copy real ones from Google Reviews.</p>
+          </div>
+          <button class="btn btn-primary btn-sm" id="addTestimonialBtn">+ Review</button>
+        </div>
+        <div id="testimonialsListAdmin"><div class="skeleton"></div></div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="panel" id="panel-settings">
+      <div class="card">
+        <h3>Social links</h3>
+        <form id="socialForm" class="form-inline">
+          <div class="field"><label>Instagram URL</label><input name="instagram" placeholder="https://instagram.com/..."></div>
+          <div class="field"><label>Facebook URL</label><input name="facebook" placeholder="https://facebook.com/..."></div>
+          <div class="field"><label>TikTok URL</label><input name="tiktok" placeholder="https://tiktok.com/@..."></div>
+          <button type="submit" class="btn btn-primary" style="justify-self:start;">Save social links</button>
+        </form>
+      </div>
+      <div class="card">
+        <h3>Website settings</h3>
+        <form id="settingsForm" class="form-inline">
+          <div class="field"><label>Reservation form note</label><textarea name="reservation_note"></textarea></div>
+          <div class="field"><label>SEO meta description</label><textarea name="meta_description"></textarea></div>
+          <button type="submit" class="btn btn-primary" style="justify-self:start;">Save settings</button>
+        </form>
+      </div>
+      <div class="card">
+        <h3>Account</h3>
+        <p class="card-sub" id="accountEmail">Signed in</p>
+        <button class="btn btn-outline btn-sm" id="logoutBtn2">Sign out</button>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Mobile nav drawer -->
+<div class="modal-overlay" id="mobileNavOverlay">
+  <div class="modal" style="max-width:280px;">
+    <div class="modal-head"><h3>Menu</h3><button class="modal-close" id="mobileNavClose">&times;</button></div>
+    <div id="mobileNavItems" style="display:flex;flex-direction:column;gap:4px;"></div>
+  </div>
+</div>
+
+<!-- Generic modal for add/edit forms -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h3 id="modalTitle">Add item</h3>
+      <button class="modal-close" id="modalClose">&times;</button>
+    </div>
+    <form id="modalForm" class="form-inline"></form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="../js/supabase-config.js"></script>
+<script src="js/admin-dashboard.js"></script>
+</body>
+</html>

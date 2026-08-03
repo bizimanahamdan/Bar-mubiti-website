@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bar Mubiti — Bar & Grill in Kigali</title>
+<meta name="description" content="Bar Mubiti is a lively bar & grill in Kigali. Grilled classics, cold drinks and good vibes every evening. Call, WhatsApp or reserve a table.">
+
+<!-- Open Graph / social sharing -->
+<meta property="og:title" content="Bar Mubiti — Bar & Grill in Kigali">
+<meta property="og:description" content="Grilled classics, cold drinks and good vibes every evening in Kigali.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/og-image.svg">
+<meta name="theme-color" content="#15100c">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,500;0,600;0,700;1,500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+
+<!-- Local business structured data -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BarOrPub",
+  "name": "Bar Mubiti",
+  "servesCuisine": "Grill",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "2332+M8F",
+    "addressLocality": "Kigali",
+    "addressCountry": "RW"
+  },
+  "telephone": "+250788582914",
+  "priceRange": "RF 1,000–15,000",
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": "3.7",
+    "reviewCount": "111"
+  }
+}
+</script>
+</head>
+<body>
+
+<a href="#main" class="skip-link">Skip to content</a>
+
+<!-- ============ NAV ============ -->
+<nav class="nav" id="siteNav" aria-label="Primary">
+  <div class="container nav-inner">
+    <a href="#home" class="brand" aria-label="Bar Mubiti home">Bar Mubiti<span class="brand-dot">.</span></a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#menu">Menu</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#location">Location</a></li>
+      <li><a href="#reviews">Reviews</a></li>
+      <li><a href="#contact">Reserve</a></li>
+    </ul>
+    <a href="#contact" class="btn btn-primary btn-sm nav-cta">Reserve a table</a>
+    <button class="nav-toggle" id="navToggle" aria-label="Open menu" aria-expanded="false" aria-controls="mobileMenu">
+      <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</nav>
+
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about">About</a>
+  <a href="#menu">Menu</a>
+  <a href="#gallery">Gallery</a>
+  <a href="#location">Location</a>
+  <a href="#reviews">Reviews</a>
+  <a href="#contact">Reserve</a>
+  <div class="mobile-cta">
+    <a href="tel:0788582914" class="btn btn-outline btn-block">Call now</a>
+    <a href="#contact" class="btn btn-primary btn-block">Reserve a table</a>
+  </div>
+</div>
+
+<main id="main">
+
+<!-- ============ HERO ============ -->
+<section class="hero" id="home">
+  <div class="hero-glow"></div>
+  <canvas id="emberCanvas" aria-hidden="true"></canvas>
+  <div class="hero-grain"></div>
+  <div class="container hero-inner">
+    <div class="hero-status">
+      <span class="status-dot"></span>
+      <span id="heroOpenStatus">Open now</span>
+    </div>
+    <h1>Grilled classics.<br><em>Good vibes</em> after dark.</h1>
+    <p class="hero-lede" id="heroTagline">Bar Mubiti is Kigali's home for smoky brochettes, cold drinks and an evening crowd that keeps the night going.</p>
+    <div class="hero-meta">
+      <span class="stars" id="heroRatingStars">★★★★☆</span>
+      <span id="heroRatingText">3.7 · 111 Google reviews</span>
+      <span>·</span>
+      <span id="heroPriceRange">RF 1,000 – 15,000</span>
+      <span>·</span>
+      <span>2332+M8F, Kigali</span>
+    </div>
+    <div class="hero-actions">
+      <a href="#contact" class="btn btn-primary">Reserve a table</a>
+      <a href="#" id="heroWhatsapp" class="btn btn-outline" target="_blank" rel="noopener">
+        <svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.95 6.45 17.5 2 12.04 2Zm0 18.1a8.2 8.2 0 0 1-4.18-1.14l-.3-.18-3.12.82.83-3.04-.2-.31a8.18 8.18 0 0 1-1.26-4.34c0-4.53 3.7-8.22 8.24-8.22 4.54 0 8.23 3.69 8.23 8.22 0 4.53-3.69 8.19-8.24 8.19Zm4.51-6.16c-.25-.12-1.47-.72-1.7-.81-.23-.08-.39-.12-.56.13-.16.24-.64.81-.79.98-.14.16-.29.18-.54.06-.25-.12-1.04-.38-1.98-1.22-.73-.65-1.23-1.46-1.37-1.7-.14-.25-.02-.38.11-.5.11-.11.25-.29.37-.43.12-.14.16-.25.25-.41.08-.16.04-.31-.02-.43-.06-.12-.56-1.35-.77-1.85-.2-.48-.41-.42-.56-.43h-.48c-.16 0-.43.06-.65.31-.23.25-.85.83-.85 2.03s.87 2.36 1 2.52c.12.16 1.7 2.6 4.13 3.64.58.25 1.03.4 1.38.51.58.18 1.1.16 1.52.1.46-.07 1.47-.6 1.68-1.18.2-.58.2-1.08.14-1.18-.06-.1-.23-.16-.48-.28Z"/></svg>
+        WhatsApp
+      </a>
+      <a href="tel:0788582914" class="btn btn-outline">
+        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.36 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.34 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Call
+      </a>
+    </div>
+  </div>
+  <div class="scroll-cue"><span class="scroll-line"></span> Scroll</div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section class="section" id="about">
+  <div class="container">
+    <div class="about-grid">
+      <div>
+        <span class="eyebrow">About Bar Mubiti</span>
+        <h2 class="section-title">Where Kigali comes<br>to unwind after dark.</h2>
+        <div class="about-copy">
+          <p id="aboutDescription">Bar Mubiti brings together everything a good evening needs — brochettes straight off the grill, cold drinks, and a lively atmosphere that fills up as the sun goes down. Whether you're stopping by after work or settling in for the night, there's a table with your name on it.</p>
+          <p>Expect a social, food-focused crowd, attentive service and the kind of easy hospitality that keeps regulars coming back.</p>
+        </div>
+        <div class="about-stats">
+          <div class="stat-card"><div class="stat-num" id="statRating">3.7★</div><div class="stat-label">Google rating</div></div>
+          <div class="stat-card"><div class="stat-num" id="statReviews">111</div><div class="stat-label">Google reviews</div></div>
+          <div class="stat-card"><div class="stat-num">RF 1K–15K</div><div class="stat-label">Price range</div></div>
+          <div class="stat-card"><div class="stat-num" id="statStatus">Open</div><div class="stat-label">Right now</div></div>
+        </div>
+      </div>
+      <div class="about-visual">
+        <div class="placeholder-mark">
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg>
+          Add a photo of the venue in Admin → Business Info
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ MENU ============ -->
+<section class="section section-alt" id="menu">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">On the menu</span>
+      <h2 class="section-title">Straight off the grill.</h2>
+      <p class="section-lede">Smoky brochettes, hearty mains and a full drinks list — updated by the Bar Mubiti team.</p>
+    </div>
+    <div class="menu-tabs" id="menuTabs" role="tablist" aria-label="Menu categories"></div>
+    <div class="menu-grid" id="menuGrid" aria-live="polite"></div>
+    <div class="offers-strip" id="offersStrip"></div>
+  </div>
+</section>
+
+<!-- ============ GALLERY ============ -->
+<section class="section" id="gallery">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">The vibe</span>
+      <h2 class="section-title">See it before you arrive.</h2>
+      <p class="section-lede">A look at the food, drinks and atmosphere at Bar Mubiti.</p>
+    </div>
+    <div class="gallery-grid" id="galleryGrid"></div>
+  </div>
+</section>
+
+<!-- ============ LOCATION & HOURS ============ -->
+<section class="section section-alt" id="location">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Find us</span>
+      <h2 class="section-title">Location & hours.</h2>
+    </div>
+    <div class="location-grid">
+      <div>
+        <div class="info-card" style="margin-bottom:18px;">
+          <div class="info-row">
+            <div class="icon-wrap"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 6-9 12-9 12s-9-6-9-12a9 9 0 0 1 18 0Z"/><circle cx="12" cy="10" r="3"/></svg></div>
+            <div><div class="info-row-label">Address</div><div class="info-row-value" id="locAddress">2332+M8F, Kigali</div></div>
+          </div>
+          <div class="info-row">
+            <div class="icon-wrap"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.36 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.34 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg></div>
+            <div><div class="info-row-label">Phone</div><div class="info-row-value"><a href="tel:0788582914" id="locPhone">0788 582 914</a></div></div>
+          </div>
+        </div>
+        <h3 style="font-size:1.1rem;margin-bottom:6px;">Opening hours</h3>
+        <div class="hours-list" id="hoursList"></div>
+      </div>
+      <div class="map-embed">
+        <iframe title="Bar Mubiti location map" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+          src="https://www.google.com/maps?q=Bar+Mubiti+Kigali&output=embed"></iframe>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ REVIEWS ============ -->
+<section class="section" id="reviews">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">What people say</span>
+      <h2 class="section-title">Reviews from Bar Mubiti guests.</h2>
+    </div>
+    <div class="rating-summary">
+      <div class="rating-num" id="reviewsRatingNum">3.7</div>
+      <div>
+        <div class="rating-stars" id="reviewsStars">★★★★☆</div>
+        <div class="rating-count" id="reviewsCount">Based on 111 Google reviews</div>
+      </div>
+    </div>
+    <div class="testimonial-grid" id="testimonialGrid"></div>
+  </div>
+</section>
+
+<!-- ============ CONTACT / RESERVATION ============ -->
+<section class="section section-alt" id="contact">
+  <div class="container">
+    <div class="section-head">
+      <span class="eyebrow">Reserve or ask us anything</span>
+      <h2 class="section-title">Book a table.</h2>
+      <p class="section-lede" id="reservationNote">We'll confirm your table by phone or WhatsApp shortly after you submit.</p>
+    </div>
+    <div class="contact-grid">
+      <form class="form-card" id="reservationForm" novalidate>
+        <div class="form-row">
+          <label for="rName">Full name</label>
+          <input type="text" id="rName" name="name" required autocomplete="name">
+        </div>
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label for="rPhone">Phone number</label>
+            <input type="tel" id="rPhone" name="phone" required autocomplete="tel" placeholder="078...">
+          </div>
+          <div class="form-row">
+            <label for="rParty">Party size</label>
+            <input type="number" id="rParty" name="party" min="1" max="50" placeholder="e.g. 4">
+          </div>
+        </div>
+        <div class="form-grid-2">
+          <div class="form-row">
+            <label for="rDate">Preferred date</label>
+            <input type="date" id="rDate" name="date">
+          </div>
+          <div class="form-row">
+            <label for="rTime">Preferred time</label>
+            <input type="time" id="rTime" name="time">
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="rMessage">Message (optional)</label>
+          <textarea id="rMessage" name="message" placeholder="Anything we should know?"></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="rSubmit">Send reservation request</button>
+        <div class="form-status" id="rStatus" role="status"></div>
+        <p class="form-note">This sends your request directly to the Bar Mubiti team — it does not guarantee a table until confirmed.</p>
+      </form>
+      <div class="quick-contact">
+        <a href="#" id="quickWhatsapp" target="_blank" rel="noopener" class="quick-card whatsapp">
+          <div class="icon-wrap"><svg class="icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21h.01c5.46 0 9.9-4.45 9.9-9.91C21.95 6.45 17.5 2 12.04 2Z"/></svg></div>
+          <div><div class="quick-card-title">Chat on WhatsApp</div><div class="quick-card-sub">Fastest way to reach us</div></div>
+        </a>
+        <a href="tel:0788582914" class="quick-card call">
+          <div class="icon-wrap"><svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.36 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.34 1.85.573 2.81.7A2 2 0 0 1 22 16.92Z"/></svg></div>
+          <div><div class="quick-card-title">Call 0788 582 914</div><div class="quick-card-sub">Speak to us directly</div></div>
+        </a>
+        <div class="info-card">
+          <div class="info-row-label" style="margin-bottom:8px;">Good to know</div>
+          <p style="color:var(--text-muted);font-size:0.88rem;line-height:1.6;">Price range is RF 1,000–15,000 per person. Walk-ins are welcome — reservations are recommended on busy evenings.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ============ FOOTER ============ -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="brand">Bar Mubiti<span class="brand-dot">.</span></div>
+        <p>A lively bar & grill in Kigali — grilled classics, cold drinks, good vibes.</p>
+        <div class="footer-social" id="footerSocial" style="margin-top:16px;"></div>
+      </div>
+      <div class="footer-col">
+        <h5>Explore</h5>
+        <a href="#menu">Menu</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#reviews">Reviews</a>
+        <a href="#contact">Reserve</a>
+      </div>
+      <div class="footer-col">
+        <h5>Contact</h5>
+        <p id="footerAddress">2332+M8F, Kigali</p>
+        <a href="tel:0788582914" id="footerPhone">0788 582 914</a>
+      </div>
+      <div class="footer-col">
+        <h5>Hours</h5>
+        <p id="footerHoursToday">Open today</p>
+        <p id="footerHoursClose">Closes 12:00 AM</p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div>© <span id="year"></span> Bar Mubiti. All rights reserved.</div>
+      <div>Website by <a href="https://github.com/bizimanahamdan" target="_blank" rel="noopener" style="color:var(--text-muted);text-decoration:underline;">Hamdan Bizimana</a></div>
+    </div>
+  </div>
+</footer>
+
+<!-- Mobile sticky CTA -->
+<div class="sticky-cta">
+  <a href="tel:0788582914" class="btn btn-outline">Call</a>
+  <a href="#" id="stickyWhatsapp" target="_blank" rel="noopener" class="btn btn-outline">WhatsApp</a>
+  <a href="#contact" class="btn btn-primary">Reserve</a>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="js/supabase-config.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
