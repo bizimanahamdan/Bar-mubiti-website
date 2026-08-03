@@ -5,8 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>Admin Dashboard — Bar Mubiti</title>
-<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
-<link rel="stylesheet" href="css/admin.css">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/admin/css/admin.css">
 </head>
 <body>
 
@@ -75,6 +75,15 @@
           </div>
           <button type="submit" class="btn btn-primary" style="justify-self:start;">Save business info</button>
         </form>
+      </div>
+      <div class="card">
+        <h3>Hero video</h3>
+        <p class="card-sub">Optional short looping video (5–10 sec, grill/drinks/vibe) that plays behind the homepage hero. Keep the file small — under ~8MB loads fastest on mobile data. Leave empty to keep the animated ember background only.</p>
+        <div id="currentHeroVideo" style="margin-bottom:14px;"></div>
+        <label class="btn btn-primary btn-sm" for="heroVideoInput">Upload video</label>
+        <input type="file" id="heroVideoInput" accept="video/mp4,video/webm,video/quicktime" style="display:none;">
+        <button class="btn btn-outline btn-sm" id="removeHeroVideoBtn" style="margin-left:8px;display:none;">Remove video</button>
+        <div class="upload-progress" id="heroVideoUploadStatus"></div>
       </div>
     </section>
 
@@ -216,7 +225,7 @@
 <div class="toast" id="toast"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
-<script src="../js/supabase-config.js"></script>
-<script src="js/admin-dashboard.js"></script>
+<script src="/js/supabase-config.js"></script>
+<script src="/admin/js/admin-dashboard.js"></script>
 </body>
 </html>
