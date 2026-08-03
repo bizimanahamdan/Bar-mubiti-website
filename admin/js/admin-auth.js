@@ -12,11 +12,11 @@ if (!IS_SUPABASE_CONFIGURED || !supabaseClient) {
     "Backend isn't connected yet.<br>Open <code>js/supabase-config.js</code>, add your Supabase Project URL and anon key, then reload this page. See README.md for full setup steps.";
   loginForm.querySelectorAll("input, button").forEach((el) => (el.disabled = true));
 } else {
-  setupNote.textContent = "Don't have an admin account yet? Create one from your Supabase Dashboard → Authentication → Users → Add user. Then sign in here with that email and password.";
+  setupNote.textContent = "";
 
   // If already signed in, skip straight to dashboard.
   supabaseClient.auth.getSession().then(({ data }) => {
-    if (data.session) window.location.href = "dashboard.html";
+    if (data.session) window.location.href = "/admin/dashboard.html";
   });
 
   loginForm.addEventListener("submit", async (e) => {
@@ -40,6 +40,7 @@ if (!IS_SUPABASE_CONFIGURED || !supabaseClient) {
       loginError.classList.add("show");
       return;
     }
-    window.location.href = "dashboard.html";
+    window.location.href = "/admin/dashboard.html";
   });
-}
+     }
+       
