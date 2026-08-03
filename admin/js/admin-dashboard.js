@@ -27,7 +27,7 @@ if (!IS_SUPABASE_CONFIGURED || !supabaseClient) {
         Open <code>js/supabase-config.js</code> in your project, add your Supabase Project URL and anon key,
         then reload this page. Full steps are in README.md.
       </p>
-      <a href="index.html" class="btn btn-outline btn-sm" style="margin-top:14px;">Back to login</a>
+      <a href="/admin/index.html" class="btn btn-outline btn-sm" style="margin-top:14px;">Back to login</a>
     </div>`;
   document.querySelector(".sidebar").style.display = "none";
 } else {
@@ -37,13 +37,13 @@ if (!IS_SUPABASE_CONFIGURED || !supabaseClient) {
 async function init() {
   const { data } = await supabaseClient.auth.getSession();
   if (!data.session) {
-    window.location.href = "index.html";
+    window.location.href = "/admin/index.html";
     return;
   }
   document.getElementById("accountEmail").textContent = `Signed in as ${data.session.user.email}`;
 
   supabaseClient.auth.onAuthStateChange((event) => {
-    if (event === "SIGNED_OUT") window.location.href = "index.html";
+    if (event === "SIGNED_OUT") window.location.href = "/admin/index.html";
   });
 
   wireNav();
@@ -52,6 +52,7 @@ async function init() {
   wireBusinessForm();
   wireSocialSettingsForm();
   wireGalleryUpload();
+  wireHeroVideoUpload();
   document.getElementById("addCategoryBtn").addEventListener("click", openCategoryModal);
   document.getElementById("addMenuItemBtn").addEventListener("click", () => openMenuItemModal());
   document.getElementById("addOfferBtn").addEventListener("click", () => openOfferModal());
@@ -184,6 +185,43 @@ async function loadBusinessForm() {
   Object.entries(data).forEach(([key, value]) => {
     const input = form.elements[key];
     if (input) input.value = value ?? "";
+  });
+  renderCurrentHeroVideo(data.hero_video_url);
+}
+
+function renderCurrentHeroVideo(url) {
+  const box = document.getElementById("currentHeroVideo");
+  const removeBtn = document.getElementById("removeHeroVideoBtn");
+  if (!url) {
+    box.innerHTML = `<div class="empty" style="padding:16px;">No hero video uploaded yet — the site shows the animated ember background.</div>`;
+    removeBtn.style.display = "none";
+    return;
+  }
+  box.innerHTML = `<video src="${escapeAttr(url)}" controls muted style="width:100%;max-width:320px;border-radius:10px;border:1px solid var(--line);"></video>`;
+  removeBtn.style.display = "inline-flex";
+}
+
+function wireHeroVideoUpload() {
+  document.getElementById("heroVideoInput").addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const status = document.getElementById("heroVideoUploadStatus");
+    status.textContent = "Uploading… this can take a minute depending on your connection.";
+    const url = await uploadToBucket("videos", file);
+    e.target.value = "";
+    if (!url) { status.textContent = ""; return; }
+    const { error } = await supabaseClient.from("business_info").update({ hero_video_url: url }).eq("id", 1);
+    status.textContent = "";
+    if (error) return toast("Couldn't save: " + error.message, "error");
+    toast("Hero video updated");
+    renderCurrentHeroVideo(url);
+  });
+  document.getElementById("removeHeroVideoBtn").addEventListener("click", async () => {
+    if (!confirm("Remove the hero video? The site will fall back to the animated background.")) return;
+    const { error } = await supabaseClient.from("business_info").update({ hero_video_url: null }).eq("id", 1);
+    if (error) return toast("Couldn't save: " + error.message, "error");
+    toast("Hero video removed");
+    renderCurrentHeroVideo(null);
   });
 }
 function wireBusinessForm() {
