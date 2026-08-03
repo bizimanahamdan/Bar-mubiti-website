@@ -234,6 +234,25 @@ function renderBusinessInfo(b) {
   const starCount = Math.round(b.google_rating || 0);
   const starStr = "★".repeat(starCount) + "☆".repeat(5 - starCount);
   document.getElementById("heroRatingStars").textContent = starStr;
+
+  renderHeroVideo(b.hero_video_url);
+}
+
+function renderHeroVideo(url) {
+  const video = document.getElementById("heroVideo");
+  const hero = document.getElementById("home");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!url || reduceMotion) return; // no video set, or visitor prefers reduced motion — keep the ember-only look
+  video.src = url;
+  video.addEventListener("canplay", () => {
+    video.play().catch(() => {}); // autoplay can be blocked on some browsers; fails silently, ember background still looks complete
+    video.classList.add("playing");
+    hero.classList.add("has-video");
+  }, { once: true });
+  video.addEventListener("error", () => {
+    console.warn("Hero video failed to load, falling back to ember background only.");
+  }, { once: true });
+  video.load();
 }
 
 function isOpenNow(hoursForToday) {
