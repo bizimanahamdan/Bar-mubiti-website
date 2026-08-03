@@ -17,9 +17,14 @@ create table if not exists business_info (
   google_rating numeric default 3.7,
   google_review_count int default 111,
   map_url text default 'https://www.google.com/maps/search/?api=1&query=Bar+Mubiti+Kigali',
+  hero_video_url text,
   constraint single_row check (id = 1)
 );
 insert into business_info (id) values (1) on conflict (id) do nothing;
+
+-- If you ran schema.sql before this column existed, this line adds it
+-- without touching anything else (safe to run even if it already exists):
+alter table business_info add column if not exists hero_video_url text;
 
 -- ---------- OPENING HOURS ----------
 create table if not exists opening_hours (
@@ -201,7 +206,47 @@ create policy "admin full access" on site_settings for all using (auth.role() = 
 -- via Dashboard → Storage → New bucket → toggle "Public bucket" ON
 -- (Storage buckets can't reliably be created via SQL editor on all
 -- Supabase plans, so the README walks through the UI steps.)
+--
+-- IMPORTANT: marking a bucket "Public" only allows public READING
+-- of files — it does NOT allow uploads. You still need explicit
+-- storage RLS policies for the admin panel to be able to upload,
+-- replace, or delete photos. Run this after creating the buckets:
 -- ============================================================
+
+drop policy if exists "public read gallery" on storage.objects;
+create policy "public read gallery" on storage.objects for select using (bucket_id = 'gallery');
+drop policy if exists "public read menu" on storage.objects;
+create policy "public read menu" on storage.objects for select using (bucket_id = 'menu');
+
+drop policy if exists "admin upload gallery" on storage.objects;
+create policy "admin upload gallery" on storage.objects for insert with check (bucket_id = 'gallery' and auth.role() = 'authenticated');
+drop policy if exists "admin upload menu" on storage.objects;
+create policy "admin upload menu" on storage.objects for insert with check (bucket_id = 'menu' and auth.role() = 'authenticated');
+
+drop policy if exists "admin update gallery" on storage.objects;
+create policy "admin update gallery" on storage.objects for update using (bucket_id = 'gallery' and auth.role() = 'authenticated');
+drop policy if exists "admin update menu" on storage.objects;
+create policy "admin update menu" on storage.objects for update using (bucket_id = 'menu' and auth.role() = 'authenticated');
+
+drop policy if exists "admin delete gallery" on storage.objects;
+create policy "admin delete gallery" on storage.objects for delete using (bucket_id = 'gallery' and auth.role() = 'authenticated');
+drop policy if exists "admin delete menu" on storage.objects;
+create policy "admin delete menu" on storage.objects for delete using (bucket_id = 'menu' and auth.role() = 'authenticated');
+
+-- ============================================================
+-- HERO VIDEO (optional)
+-- Create one more PUBLIC bucket named exactly: videos
+-- via Dashboard → Storage → New bucket → toggle "Public bucket" ON
+-- Then run this section so the admin panel can upload to it.
+-- ============================================================
+drop policy if exists "public read videos" on storage.objects;
+create policy "public read videos" on storage.objects for select using (bucket_id = 'videos');
+drop policy if exists "admin upload videos" on storage.objects;
+create policy "admin upload videos" on storage.objects for insert with check (bucket_id = 'videos' and auth.role() = 'authenticated');
+drop policy if exists "admin update videos" on storage.objects;
+create policy "admin update videos" on storage.objects for update using (bucket_id = 'videos' and auth.role() = 'authenticated');
+drop policy if exists "admin delete videos" on storage.objects;
+create policy "admin delete videos" on storage.objects for delete using (bucket_id = 'videos' and auth.role() = 'authenticated');
 
 -- Seed a few starter testimonials so the site never looks empty
 -- before you've added real reviews (edit/replace these in Admin).
