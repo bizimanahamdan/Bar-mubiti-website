@@ -8,8 +8,8 @@
       read from here, so you only edit it once.
    ============================================================ */
 
-const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL"; // e.g. https://xxxxx.supabase.co
-const SUPABASE_ANON_KEY = "YOUR_SUPABASE_ANON_PUBLIC_KEY";
+const SUPABASE_URL = "https://sbhjmqghnvcndreifeyu.supabase.co"; // e.g. https://xxxxx.supabase.co
+const SUPABASE_ANON_KEY = "sb_publishable_Ihxri7TaKy92gKBMYjV9yg_rTXLhtMi";
 
 const IS_SUPABASE_CONFIGURED =
   SUPABASE_URL.startsWith("https://") &&
