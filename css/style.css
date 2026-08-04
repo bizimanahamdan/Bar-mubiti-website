@@ -769,12 +769,7 @@ h1, h2, h3, h4 {
   .floating-whatsapp { animation: none; }
 }
 @media (max-width: 859.98px) {
-  .floating-whatsapp {
-    bottom: calc(88px + env(safe-area-inset-bottom));
-    width: 50px;
-    height: 50px;
-  }
-  .floating-whatsapp .icon { width: 25px; height: 25px; }
+  .floating-whatsapp { display: none; }
 }
 
 /* ---------- Skip link ---------- */
