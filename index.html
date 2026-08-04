@@ -133,8 +133,9 @@
           <div class="stat-card"><div class="stat-num" id="statStatus">Open</div><div class="stat-label">Right now</div></div>
         </div>
       </div>
-      <div class="about-visual">
-        <div class="placeholder-mark">
+      <div class="about-visual" id="aboutVisual">
+        <img id="aboutImage" alt="Bar Mubiti venue" style="display:none;position:absolute;inset:0;width:100%;height:100%;object-fit:cover;">
+        <div class="placeholder-mark" id="aboutPlaceholder">
           <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg>
           Add a photo of the venue in Admin → Business Info
         </div>
@@ -327,6 +328,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="js/supabase-config.js?v=1"></script>
-<script src="js/main.js?v=3"></script>
+<script src="js/main.js?v=4"></script>
 </body>
 </html>
