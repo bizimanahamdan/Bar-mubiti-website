@@ -54,6 +54,31 @@ const FALLBACK = {
 const DAY_NAMES = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 /* ---------------------------------------------------------
+   NAV CTA — inserted into the DOM only on desktop widths.
+   The button does not exist in the page at all on mobile,
+   so no CSS rule, cache, or browser quirk can make it appear there.
+--------------------------------------------------------- */
+function manageNavCta() {
+  const navInner = document.querySelector(".nav-inner");
+  const toggle = document.getElementById("navToggle");
+  let cta = document.getElementById("navCtaDynamic");
+  if (window.innerWidth >= 860) {
+    if (!cta) {
+      cta = document.createElement("a");
+      cta.href = "#contact";
+      cta.id = "navCtaDynamic";
+      cta.className = "btn btn-primary btn-sm";
+      cta.textContent = "Reserve a table";
+      navInner.insertBefore(cta, toggle);
+    }
+  } else if (cta) {
+    cta.remove();
+  }
+}
+manageNavCta();
+window.addEventListener("resize", manageNavCta);
+
+/* ---------------------------------------------------------
    NAV
 --------------------------------------------------------- */
 const nav = document.getElementById("siteNav");
