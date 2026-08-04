@@ -53,8 +53,8 @@ async function init() {
   wireSocialSettingsForm();
   wireGalleryUpload();
   wireHeroVideoUpload();
-  document.getElementById("addCategoryBtn").addEventListener("click", openCategoryModal);
-  document.getElementById("addMenuItemBtn").addEventListener("click", () => openMenuItemModal());
+  wireAboutImageUpload();
+  document.getElementById("addCategoryBtn").addEventListener("click", () => openCategoryModal());
   document.getElementById("addOfferBtn").addEventListener("click", () => openOfferModal());
   document.getElementById("addTestimonialBtn").addEventListener("click", () => openTestimonialModal());
 
@@ -172,7 +172,11 @@ async function loadOverview() {
   const box = document.getElementById("overviewRecentReservations");
   if (error) { box.innerHTML = `<div class="empty">Couldn't load requests.</div>`; return; }
   if (!recent.length) { box.innerHTML = `<div class="empty">No reservation requests yet.</div>`; return; }
-  box.innerHTML = recent.map(reservationRowHtml).join("");
+  box.innerHTML = recent.map((r) => reservationRowHtml(r, { compact: true })).join("") +
+    `<button class="btn btn-outline btn-sm btn-block" id="viewAllReservationsBtn" style="margin-top:10px;">View all reservations</button>`;
+  document.getElementById("viewAllReservationsBtn").addEventListener("click", () => {
+    document.querySelector('.nav-item[data-panel="reservations"]')?.click();
+  });
 }
 
 /* ---------------------------------------------------------
@@ -187,6 +191,43 @@ async function loadBusinessForm() {
     if (input) input.value = value ?? "";
   });
   renderCurrentHeroVideo(data.hero_video_url);
+  renderCurrentAboutImage(data.about_image_url);
+}
+
+function renderCurrentAboutImage(url) {
+  const box = document.getElementById("currentAboutImage");
+  const removeBtn = document.getElementById("removeAboutImageBtn");
+  if (!url) {
+    box.innerHTML = `<div class="empty" style="padding:16px;">No photo uploaded yet — the site shows a placeholder.</div>`;
+    removeBtn.style.display = "none";
+    return;
+  }
+  box.innerHTML = `<img src="${escapeAttr(url)}" style="width:100%;max-width:280px;border-radius:10px;border:1px solid var(--line);display:block;">`;
+  removeBtn.style.display = "inline-flex";
+}
+
+function wireAboutImageUpload() {
+  document.getElementById("aboutImageInput").addEventListener("change", async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const status = document.getElementById("aboutImageUploadStatus");
+    status.textContent = "Uploading…";
+    const url = await uploadToBucket("gallery", file);
+    e.target.value = "";
+    if (!url) { status.textContent = ""; return; }
+    const { error } = await supabaseClient.from("business_info").update({ about_image_url: url }).eq("id", 1);
+    status.textContent = "";
+    if (error) return toast("Couldn't save: " + error.message, "error");
+    toast("Photo updated");
+    renderCurrentAboutImage(url);
+  });
+  document.getElementById("removeAboutImageBtn").addEventListener("click", async () => {
+    if (!confirm("Remove this photo? The site will show a placeholder instead.")) return;
+    const { error } = await supabaseClient.from("business_info").update({ about_image_url: null }).eq("id", 1);
+    if (error) return toast("Couldn't save: " + error.message, "error");
+    toast("Photo removed");
+    renderCurrentAboutImage(null);
+  });
 }
 
 function renderCurrentHeroVideo(url) {
@@ -276,78 +317,96 @@ async function loadHours() {
 }
 
 /* ---------------------------------------------------------
-   MENU (categories + items)
+   MENU (categories + items) — all categories shown at once
 --------------------------------------------------------- */
-let activeCategoryId = null;
-
 async function loadMenu() {
   const { data: categories } = await supabaseClient.from("menu_categories").select("*").order("sort_order");
-  const tagBox = document.getElementById("categoryTags");
+  const jumpBox = document.getElementById("categoryJumpLinks");
+  const container = document.getElementById("menuCategoriesContainer");
+
   if (!categories || !categories.length) {
-    tagBox.innerHTML = `<div class="empty">No categories yet — add one above.</div>`;
-    document.getElementById("menuItemsList").innerHTML = "";
+    jumpBox.innerHTML = "";
+    container.innerHTML = `<div class="empty">No categories yet — add one above.</div>`;
     return;
   }
-  if (!activeCategoryId || !categories.find((c) => c.id === activeCategoryId)) activeCategoryId = categories[0].id;
 
-  tagBox.innerHTML = categories.map((c) => `
-    <button class="${c.id === activeCategoryId ? "active" : ""}" data-id="${c.id}">${escapeHtml(c.name)}
-      <span style="opacity:.6;margin-left:4px;" class="del-cat" data-id="${c.id}">✕</span>
-    </button>
-  `).join("");
-  tagBox.querySelectorAll("button").forEach((b) => b.addEventListener("click", (e) => {
-    if (e.target.classList.contains("del-cat")) {
-      e.stopPropagation();
-      if (confirm("Delete this category? Items inside it will be uncategorized.")) {
-        supabaseClient.from("menu_categories").delete().eq("id", e.target.dataset.id).then(() => { activeCategoryId = null; loadMenu(); });
-      }
-      return;
-    }
-    activeCategoryId = Number(b.dataset.id);
-    loadMenu();
+  jumpBox.innerHTML = categories.map((c) => `<button data-target="admin-cat-${c.id}">${escapeHtml(c.name)}</button>`).join("");
+  jumpBox.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
+    document.getElementById(b.dataset.target)?.scrollIntoView({ behavior: "smooth", block: "start" });
   }));
 
-  document.getElementById("menuItemsHeading").textContent = `Items — ${categories.find((c) => c.id === activeCategoryId)?.name || ""}`;
+  const { data: items } = await supabaseClient.from("menu_items").select("*").order("sort_order");
 
-  const { data: items } = await supabaseClient.from("menu_items").select("*").eq("category_id", activeCategoryId).order("sort_order");
-  const list = document.getElementById("menuItemsList");
-  if (!items || !items.length) { list.innerHTML = `<div class="empty">No items in this category yet.</div>`; return; }
-  list.innerHTML = items.map((item) => `
-    <div class="list-item">
-      ${item.image_url ? `<img src="${escapeAttr(item.image_url)}" alt="">` : `<div class="thumb">🍢</div>`}
-      <div class="list-item-body">
-        <div class="list-item-title">${escapeHtml(item.name)} ${item.price ? `— RWF ${Number(item.price).toLocaleString()}` : ""}</div>
-        <div class="list-item-sub">
-          <span class="badge ${item.is_available ? "available" : "unavailable"}">${item.is_available ? "Available" : "Unavailable"}</span>
+  container.innerHTML = categories.map((cat) => {
+    const catItems = (items || []).filter((i) => i.category_id === cat.id);
+    return `
+      <div class="card" id="admin-cat-${cat.id}" style="margin-bottom:16px;">
+        <div class="toolbar">
+          <h3>${escapeHtml(cat.name)}</h3>
+          <div style="display:flex;gap:6px;">
+            <button class="icon-btn edit-cat" data-id="${cat.id}" data-name="${escapeAttr(cat.name)}" title="Rename category">✎</button>
+            <button class="icon-btn del-cat" data-id="${cat.id}" title="Delete category">🗑</button>
+            <button class="btn btn-primary btn-sm add-item-to-cat" data-cat="${cat.id}">+ Item</button>
+          </div>
+        </div>
+        <div>
+          ${catItems.length ? catItems.map((item) => `
+            <div class="list-item">
+              ${item.image_url ? `<img src="${escapeAttr(item.image_url)}" alt="">` : `<div class="thumb">🍢</div>`}
+              <div class="list-item-body">
+                <div class="list-item-title">${escapeHtml(item.name)} ${item.price ? `— RWF ${Number(item.price).toLocaleString()}` : ""}</div>
+                <div class="list-item-sub">
+                  <span class="badge ${item.is_available ? "available" : "unavailable"}">${item.is_available ? "Available" : "Unavailable"}</span>
+                </div>
+              </div>
+              <div class="list-item-actions">
+                <button class="icon-btn edit-item" data-id="${item.id}">✎</button>
+                <button class="icon-btn del-item" data-id="${item.id}">🗑</button>
+              </div>
+            </div>
+          `).join("") : `<div class="empty">No items in this category yet.</div>`}
         </div>
       </div>
-      <div class="list-item-actions">
-        <button class="icon-btn edit-item" data-id="${item.id}">✎</button>
-        <button class="icon-btn del-item" data-id="${item.id}">🗑</button>
-      </div>
-    </div>
-  `).join("");
-  list.querySelectorAll(".edit-item").forEach((b) => b.addEventListener("click", () => openMenuItemModal(items.find((i) => i.id === Number(b.dataset.id)))));
-  list.querySelectorAll(".del-item").forEach((b) => b.addEventListener("click", async () => {
+    `;
+  }).join("");
+
+  container.querySelectorAll(".add-item-to-cat").forEach((b) => b.addEventListener("click", () => openMenuItemModal(null, Number(b.dataset.cat))));
+  container.querySelectorAll(".edit-item").forEach((b) => b.addEventListener("click", () => {
+    const item = (items || []).find((i) => i.id === Number(b.dataset.id));
+    if (item) openMenuItemModal(item, item.category_id);
+  }));
+  container.querySelectorAll(".del-item").forEach((b) => b.addEventListener("click", async () => {
     if (!confirm("Delete this menu item?")) return;
     await supabaseClient.from("menu_items").delete().eq("id", b.dataset.id);
     toast("Item deleted"); loadMenu(); loadOverview();
   }));
+  container.querySelectorAll(".edit-cat").forEach((b) => b.addEventListener("click", () => openCategoryModal({ id: Number(b.dataset.id), name: b.dataset.name })));
+  container.querySelectorAll(".del-cat").forEach((b) => b.addEventListener("click", async () => {
+    if (!confirm("Delete this category? Items inside it will be uncategorized, not deleted.")) return;
+    await supabaseClient.from("menu_categories").delete().eq("id", b.dataset.id);
+    toast("Category deleted"); loadMenu();
+  }));
 }
 
-function openCategoryModal() {
-  openModal("Add category",
-    fieldHtml({ name: "name", label: "Category name", required: true, placeholder: "e.g. Cocktails" }),
+function openCategoryModal(category = null) {
+  const isEdit = !!category;
+  openModal(isEdit ? "Rename category" : "Add category",
+    fieldHtml({ name: "name", label: "Category name", value: category?.name, required: true, placeholder: "e.g. Cocktails" }),
     async (fd) => {
-      const { error } = await supabaseClient.from("menu_categories").insert({ name: fd.get("name"), sort_order: 99 });
+      const q = isEdit
+        ? supabaseClient.from("menu_categories").update({ name: fd.get("name") }).eq("id", category.id)
+        : supabaseClient.from("menu_categories").insert({ name: fd.get("name"), sort_order: 99 });
+      const { error } = await q;
       if (error) return toast("Couldn't save: " + error.message, "error");
-      closeModal(); toast("Category added"); loadMenu();
-    }
+      closeModal(); toast(isEdit ? "Category renamed" : "Category added"); loadMenu();
+    },
+    isEdit ? "Save changes" : "Add category"
   );
 }
 
-function openMenuItemModal(item = null) {
+function openMenuItemModal(item = null, categoryId = null) {
   const isEdit = !!item;
+  const targetCategoryId = isEdit ? item.category_id : categoryId;
   openModal(isEdit ? "Edit item" : "Add item",
     fieldHtml({ name: "name", label: "Item name", value: item?.name, required: true }) +
     fieldHtml({ name: "description", label: "Description", type: "textarea", value: item?.description }) +
@@ -367,7 +426,7 @@ function openMenuItemModal(item = null) {
         image_url = uploaded;
       }
       const payload = {
-        category_id: activeCategoryId,
+        category_id: targetCategoryId,
         name: fd.get("name"),
         description: fd.get("description") || null,
         price: fd.get("price") ? Number(fd.get("price")) : null,
@@ -480,8 +539,9 @@ function openOfferModal(offer = null) {
 /* ---------------------------------------------------------
    RESERVATIONS
 --------------------------------------------------------- */
-function reservationRowHtml(r) {
+function reservationRowHtml(r, opts = {}) {
   const dt = r.created_at ? new Date(r.created_at).toLocaleString() : "";
+  const compact = !!opts.compact;
   return `
     <div class="list-item" style="align-items:flex-start;">
       <div class="thumb">${r.request_type === "inquiry" ? "💬" : "📅"}</div>
@@ -494,11 +554,13 @@ function reservationRowHtml(r) {
         <div class="list-item-sub" style="margin-top:4px;">${dt}</div>
         <span class="badge ${r.status}">${r.status}</span>
       </div>
-      <div class="list-item-actions" style="flex-direction:column;">
+      ${compact ? "" : `
+      <div class="list-item-actions" style="flex-direction:column;gap:8px;">
         <select class="status-select" data-id="${r.id}" style="background:var(--bg-alt);color:var(--text);border:1px solid var(--line-strong);border-radius:8px;padding:6px;font-size:0.78rem;">
           ${["new","contacted","confirmed","closed"].map((s) => `<option value="${s}" ${s === r.status ? "selected" : ""}>${s}</option>`).join("")}
         </select>
-      </div>
+        <button class="icon-btn del-reservation" data-id="${r.id}" title="Delete">🗑</button>
+      </div>`}
     </div>
   `;
 }
@@ -506,11 +568,17 @@ async function loadReservations() {
   const { data, error } = await supabaseClient.from("reservation_requests").select("*").order("created_at", { ascending: false });
   const box = document.getElementById("reservationsList");
   if (error || !data || !data.length) { box.innerHTML = `<div class="empty">No reservation requests yet.</div>`; return; }
-  box.innerHTML = data.map(reservationRowHtml).join("");
+  box.innerHTML = data.map((r) => reservationRowHtml(r, { compact: false })).join("");
   box.querySelectorAll(".status-select").forEach((sel) => sel.addEventListener("change", async () => {
     const { error } = await supabaseClient.from("reservation_requests").update({ status: sel.value }).eq("id", sel.dataset.id);
     if (error) return toast("Couldn't update: " + error.message, "error");
     toast("Status updated"); loadOverview();
+  }));
+  box.querySelectorAll(".del-reservation").forEach((btn) => btn.addEventListener("click", async () => {
+    if (!confirm("Delete this reservation request? This can't be undone.")) return;
+    const { error } = await supabaseClient.from("reservation_requests").delete().eq("id", btn.dataset.id);
+    if (error) return toast("Couldn't delete: " + error.message, "error");
+    toast("Reservation deleted"); loadReservations(); loadOverview();
   }));
 }
 
