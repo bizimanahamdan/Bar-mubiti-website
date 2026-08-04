@@ -423,7 +423,7 @@ function wireWhatsapp(business) {
   const phone = (business.whatsapp_phone || FALLBACK.business.whatsapp_phone).replace(/\D/g, "");
   const msg = encodeURIComponent("Hi Bar Mubiti! I'd like to know more / book a table.");
   const url = `https://wa.me/${phone}?text=${msg}`;
-  ["heroWhatsapp", "quickWhatsapp", "stickyWhatsapp"].forEach((id) => {
+  ["heroWhatsapp", "quickWhatsapp", "stickyWhatsapp", "floatingWhatsapp"].forEach((id) => {
     const el = document.getElementById(id);
     if (el) el.href = url;
   });
