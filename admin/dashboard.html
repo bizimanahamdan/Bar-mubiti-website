@@ -77,6 +77,15 @@
         </form>
       </div>
       <div class="card">
+        <h3>About section photo</h3>
+        <p class="card-sub">Shown next to the "About Bar Mubiti" text on the homepage.</p>
+        <div id="currentAboutImage" style="margin-bottom:14px;"></div>
+        <label class="btn btn-primary btn-sm" for="aboutImageInput">Upload photo</label>
+        <input type="file" id="aboutImageInput" accept="image/*" style="display:none;">
+        <button class="btn btn-outline btn-sm" id="removeAboutImageBtn" style="margin-left:8px;display:none;">Remove photo</button>
+        <div class="upload-progress" id="aboutImageUploadStatus"></div>
+      </div>
+      <div class="card">
         <h3>Hero video</h3>
         <p class="card-sub">Optional short looping video (5–10 sec, grill/drinks/vibe) that plays behind the homepage hero. Keep the file small — under ~8MB loads fastest on mobile data. Leave empty to keep the animated ember background only.</p>
         <div id="currentHeroVideo" style="margin-bottom:14px;"></div>
@@ -101,20 +110,14 @@
       <div class="card">
         <div class="toolbar">
           <div>
-            <h3>Menu categories</h3>
-            <p class="card-sub">Add a category, then add items under it.</p>
+            <h3>Menu</h3>
+            <p class="card-sub">All categories and items — scroll to see everything, or tap a category name to jump.</p>
           </div>
           <button class="btn btn-primary btn-sm" id="addCategoryBtn">+ Category</button>
         </div>
-        <div class="tag-select" id="categoryTags"></div>
+        <div class="tag-select" id="categoryJumpLinks"></div>
       </div>
-      <div class="card">
-        <div class="toolbar">
-          <h3 id="menuItemsHeading">Items</h3>
-          <button class="btn btn-primary btn-sm" id="addMenuItemBtn">+ Item</button>
-        </div>
-        <div id="menuItemsList"><div class="skeleton"></div></div>
-      </div>
+      <div id="menuCategoriesContainer"><div class="skeleton"></div></div>
     </section>
 
     <!-- GALLERY -->
@@ -226,6 +229,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="/js/supabase-config.js?v=1"></script>
-<script src="/admin/js/admin-dashboard.js?v=1"></script>
+<script src="/admin/js/admin-dashboard.js?v=3"></script>
 </body>
 </html>
