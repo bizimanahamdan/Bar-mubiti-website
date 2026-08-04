@@ -261,6 +261,20 @@ function renderBusinessInfo(b) {
   document.getElementById("heroRatingStars").textContent = starStr;
 
   renderHeroVideo(b.hero_video_url);
+  renderAboutImage(b.about_image_url);
+}
+
+function renderAboutImage(url) {
+  const img = document.getElementById("aboutImage");
+  const placeholder = document.getElementById("aboutPlaceholder");
+  if (url) {
+    img.src = url;
+    img.style.display = "block";
+    placeholder.style.display = "none";
+  } else {
+    img.style.display = "none";
+    placeholder.style.display = "flex";
+  }
 }
 
 function renderHeroVideo(url) {
@@ -332,36 +346,38 @@ function renderMenu(categories, items) {
   ALL_CATEGORIES = categories;
   ALL_MENU_ITEMS = items;
   const tabsEl = document.getElementById("menuTabs");
-  tabsEl.innerHTML = "";
-  categories.forEach((cat, i) => {
-    const btn = document.createElement("button");
-    btn.className = "menu-tab" + (i === 0 ? " active" : "");
-    btn.textContent = cat.name;
-    btn.setAttribute("role", "tab");
-    btn.setAttribute("aria-selected", i === 0 ? "true" : "false");
-    btn.addEventListener("click", () => {
-      tabsEl.querySelectorAll(".menu-tab").forEach((t) => {
-        t.classList.remove("active");
-        t.setAttribute("aria-selected", "false");
-      });
-      btn.classList.add("active");
-      btn.setAttribute("aria-selected", "true");
-      renderMenuItems(cat.id);
-    });
-    tabsEl.appendChild(btn);
-  });
-  if (categories.length) renderMenuItems(categories[0].id);
-  else document.getElementById("menuGrid").innerHTML = `<div class="menu-empty">Menu coming soon — add categories and items in Admin → Menu.</div>`;
-}
-
-function renderMenuItems(categoryId) {
   const grid = document.getElementById("menuGrid");
-  const items = ALL_MENU_ITEMS.filter((i) => i.category_id === categoryId);
-  if (!items.length) {
-    grid.innerHTML = `<div class="menu-empty">No items in this category yet.</div>`;
+
+  if (!categories.length) {
+    tabsEl.innerHTML = "";
+    grid.innerHTML = `<div class="menu-empty">Menu coming soon — add categories and items in Admin → Menu.</div>`;
     return;
   }
-  grid.innerHTML = items.map((item) => `
+
+  tabsEl.innerHTML = categories.map((cat) =>
+    `<button class="menu-tab" data-target="menu-cat-${cat.id}">${escapeHtml(cat.name)}</button>`
+  ).join("");
+  tabsEl.querySelectorAll(".menu-tab").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.getElementById(btn.dataset.target)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  });
+
+  grid.innerHTML = categories.map((cat) => {
+    const catItems = items.filter((i) => i.category_id === cat.id);
+    return `
+      <div class="menu-category-section" id="menu-cat-${cat.id}">
+        <h3 class="menu-category-title">${escapeHtml(cat.name)}</h3>
+        <div class="menu-category-items">
+          ${catItems.length ? catItems.map(menuItemHtml).join("") : `<div class="menu-empty">No items in this category yet.</div>`}
+        </div>
+      </div>
+    `;
+  }).join("");
+}
+
+function menuItemHtml(item) {
+  return `
     <div class="menu-item">
       ${item.image_url
         ? `<img class="menu-item-img" src="${escapeAttr(item.image_url)}" alt="${escapeAttr(item.name)}">`
@@ -375,7 +391,7 @@ function renderMenuItems(categoryId) {
         ${item.is_available === false ? `<span class="badge-unavailable">Currently unavailable</span>` : ""}
       </div>
     </div>
-  `).join("");
+  `;
 }
 
 function renderOffers(offers) {
