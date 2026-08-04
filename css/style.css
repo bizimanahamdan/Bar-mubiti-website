@@ -439,7 +439,17 @@ h1, h2, h3, h4 {
   border-color: var(--ember);
   color: #1a0f08;
 }
-.menu-grid {
+.menu-grid { display: block; }
+.menu-category-section { margin-bottom: 40px; }
+.menu-category-section:last-child { margin-bottom: 0; }
+.menu-category-title {
+  font-size: 1.3rem;
+  color: var(--gold-soft);
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.menu-category-items {
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
@@ -812,6 +822,6 @@ h1, h2, h3, h4 {
   .footer-grid { grid-template-columns: 1.4fr 1fr 1fr 1fr; }
 }
 @media (min-width: 1000px) {
-  .menu-grid { grid-template-columns: repeat(2, 1fr); }
+  .menu-category-items { grid-template-columns: repeat(2, 1fr); }
   section#home { padding-bottom: 0; }
 }
