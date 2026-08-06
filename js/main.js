@@ -8,6 +8,20 @@
 document.getElementById("year").textContent = new Date().getFullYear();
 
 /* ---------------------------------------------------------
+   TEMPORARY DIAGNOSTIC — visit the site with ?debug on the end
+   of the URL to see the browser's reported viewport width in
+   the corner of the screen. Safe to delete this block later.
+--------------------------------------------------------- */
+if (location.search.includes("debug")) {
+  const debugBadge = document.createElement("div");
+  debugBadge.style.cssText = "position:fixed;top:6px;left:6px;z-index:99999;background:#ff0033;color:#fff;padding:8px 12px;font-size:16px;font-family:monospace;border-radius:8px;font-weight:bold;";
+  const update = () => { debugBadge.textContent = `width: ${window.innerWidth}px`; };
+  update();
+  window.addEventListener("resize", update);
+  document.body.appendChild(debugBadge);
+}
+
+/* ---------------------------------------------------------
    FALLBACK / DEMO DATA
    Used only when Supabase isn't connected yet, or a table has
    no rows. Replace real content via the Admin panel instead of
