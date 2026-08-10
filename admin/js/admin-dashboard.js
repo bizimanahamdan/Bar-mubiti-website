@@ -67,6 +67,7 @@ async function init() {
   loadReservations();
   loadTestimonials();
   loadSocialSettings();
+  wireReservationRealtime();
 }
 
 function wireLogout() {
@@ -667,8 +668,54 @@ function wireSocialSettingsForm() {
 }
 
 /* ---------------------------------------------------------
-   UTIL
+   REALTIME — instant notification when a new reservation
+   request comes in while the admin panel is open.
 --------------------------------------------------------- */
+function playNotificationSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const now = ctx.currentTime;
+    [880, 1175].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, now + i * 0.14);
+      gain.gain.linearRampToValueAtTime(0.18, now + i * 0.14 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.14 + 0.28);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(now + i * 0.14);
+      osc.stop(now + i * 0.14 + 0.3);
+    });
+  } catch (err) {
+    console.warn("Notification sound unavailable:", err);
+  }
+}
+
+function wireReservationRealtime() {
+  supabaseClient
+    .channel("reservation-requests-changes")
+    .on(
+      "postgres_changes",
+      { event: "INSERT", schema: "public", table: "reservation_requests" },
+      (payload) => {
+        const r = payload.new;
+        playNotificationSound();
+        toast(`New reservation: ${r.name} · ${r.phone}`, "success");
+        loadOverview();
+        // Only refresh the full list if that panel is currently visible,
+        // so we don't yank focus away from whatever the admin is doing.
+        if (document.getElementById("panel-reservations").classList.contains("active")) {
+          loadReservations();
+        }
+      }
+    )
+    .subscribe((status) => {
+      if (status === "CHANNEL_ERROR") {
+        console.warn("Realtime reservation notifications couldn't connect. Make sure Realtime is enabled for reservation_requests in Supabase (see schema.sql).");
+      }
+    });
+}
 function escapeHtml(str) {
   return String(str ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }

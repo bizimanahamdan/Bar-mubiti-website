@@ -558,7 +558,30 @@ reservationForm.addEventListener("submit", async (e) => {
     reservationForm.reset();
     rStatus.textContent = "Thanks! Your request has been sent — we'll confirm by phone or WhatsApp shortly.";
     rStatus.classList.add("success");
+    sendReservationEmail(payload);
   }
 });
+
+/* ---------------------------------------------------------
+   EMAIL NOTIFICATION (EmailJS) — best-effort only. The
+   reservation is already safely saved in Supabase above, so if
+   this fails (not configured yet, offline, etc.) we just log it
+   quietly rather than showing the visitor an error.
+--------------------------------------------------------- */
+function sendReservationEmail(payload) {
+  if (typeof IS_EMAILJS_CONFIGURED === "undefined" || !IS_EMAILJS_CONFIGURED || !window.emailjs) {
+    return;
+  }
+  window.emailjs
+    .send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+      name: payload.name,
+      phone: payload.phone,
+      party_size: payload.party_size || "Not specified",
+      preferred_date: payload.preferred_date || "Not specified",
+      preferred_time: payload.preferred_time || "Not specified",
+      message: payload.message || "—",
+    })
+    .catch((err) => console.warn("Email notification failed (reservation was still saved):", err));
+}
 
 loadAll();

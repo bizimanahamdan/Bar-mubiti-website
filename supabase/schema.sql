@@ -249,6 +249,17 @@ create policy "admin update videos" on storage.objects for update using (bucket_
 drop policy if exists "admin delete videos" on storage.objects;
 create policy "admin delete videos" on storage.objects for delete using (bucket_id = 'videos' and auth.role() = 'authenticated');
 
+-- ============================================================
+-- REALTIME (for instant admin notifications on new reservations)
+-- Wrapped so it's safe to re-run even if already enabled.
+-- ============================================================
+do $$
+begin
+  alter publication supabase_realtime add table reservation_requests;
+exception
+  when duplicate_object then null;
+end $$;
+
 -- Seed a few starter testimonials so the site never looks empty
 -- before you've added real reviews (edit/replace these in Admin).
 insert into testimonials (author_name, quote, rating, source, is_featured, sort_order)
