@@ -68,6 +68,7 @@ async function init() {
   loadTestimonials();
   loadSocialSettings();
   wireReservationRealtime();
+  requestNotificationPermission();
 }
 
 function wireLogout() {
@@ -702,6 +703,10 @@ function wireReservationRealtime() {
         const r = payload.new;
         playNotificationSound();
         toast(`New reservation: ${r.name} · ${r.phone}`, "success");
+        showSystemNotification(
+          "New reservation — Bar Mubiti",
+          `${r.name} · ${r.phone}${r.party_size ? ` · party of ${r.party_size}` : ""}`
+        );
         loadOverview();
         // Only refresh the full list if that panel is currently visible,
         // so we don't yank focus away from whatever the admin is doing.
@@ -716,6 +721,37 @@ function wireReservationRealtime() {
       }
     });
 }
+
+/* ---------------------------------------------------------
+   NATIVE BROWSER / SYSTEM NOTIFICATIONS
+   Shows an OS-level notification (phone/laptop notification
+   tray) even if the admin has switched to another tab or app.
+   Requires the admin to grant permission once — if they deny
+   or never respond, we just skip it silently (the in-page
+   toast + sound above still work regardless).
+--------------------------------------------------------- */
+function requestNotificationPermission() {
+  if (!("Notification" in window)) return; // unsupported browser — fail quietly
+  if (Notification.permission === "default") {
+    Notification.requestPermission();
+  }
+}
+
+function showSystemNotification(title, body) {
+  if (!("Notification" in window)) return;
+  if (Notification.permission !== "granted") return;
+  try {
+    new Notification(title, {
+      body,
+      icon: "../assets/logo.png",
+      badge: "../assets/favicon.svg",
+      tag: "bar-mubiti-reservation", // replaces any previous unread one instead of stacking endlessly
+    });
+  } catch (err) {
+    console.warn("System notification failed:", err);
+  }
+}
+
 function escapeHtml(str) {
   return String(str ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
