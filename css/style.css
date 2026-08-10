@@ -755,6 +755,106 @@ h1, h2, h3, h4 {
 }
 .sticky-cta .btn { flex: 1; }
 
+/* ---------- WhatsApp reservation modal ---------- */
+.wa-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  background: rgba(10, 7, 5, 0.72);
+  display: none;
+  align-items: flex-end;
+  justify-content: center;
+}
+.wa-modal-overlay.open { display: flex; }
+.wa-modal {
+  position: relative;
+  width: 100%;
+  max-width: 460px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 22px 22px 0 0;
+  padding: 30px 22px 34px;
+  max-height: 85svh;
+  overflow-y: auto;
+}
+.wa-modal-close {
+  position: absolute;
+  top: 14px; right: 14px;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 1.3rem;
+  line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+}
+.wa-modal-icon {
+  width: 52px; height: 52px;
+  border-radius: 50%;
+  background: rgba(37, 211, 102, 0.15);
+  color: #25D366;
+  display: flex; align-items: center; justify-content: center;
+  margin-bottom: 16px;
+}
+.wa-modal-icon .icon { width: 26px; height: 26px; }
+.wa-step h3 {
+  font-size: 1.25rem;
+  margin-bottom: 18px;
+}
+.wa-lang-choices { display: flex; flex-direction: column; gap: 12px; }
+.wa-choice-btn {
+  background: var(--bg-alt);
+  border: 1px solid var(--line-strong);
+  color: var(--text);
+  padding: 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  text-align: left;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.wa-choice-btn:hover { border-color: var(--gold); background: var(--surface-2); }
+.wa-modal-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-weight: 700;
+  margin-bottom: 14px;
+  padding: 4px 0;
+}
+.wa-modal-back .icon { width: 16px; height: 16px; }
+.wa-options { display: flex; flex-direction: column; gap: 12px; }
+.wa-option-btn {
+  background: var(--bg-alt);
+  border: 1px solid var(--line-strong);
+  border-radius: 12px;
+  padding: 15px 16px;
+  text-align: left;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.wa-option-btn:hover { border-color: var(--gold); background: var(--surface-2); }
+.wa-option-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--gold-soft);
+  margin-bottom: 4px;
+}
+.wa-option-preview {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+@media (min-width: 600px) {
+  .wa-modal-overlay { align-items: center; }
+  .wa-modal { border-radius: 22px; }
+}
+
 /* ---------- Floating WhatsApp button ---------- */
 .floating-whatsapp {
   position: fixed;
