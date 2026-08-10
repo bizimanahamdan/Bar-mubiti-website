@@ -22,9 +22,9 @@
       the same way Supabase's anon key works.
    ============================================================ */
 
-const EMAILJS_PUBLIC_KEY = "YOUR_EMAILJS_PUBLIC_KEY";
-const EMAILJS_SERVICE_ID = "YOUR_EMAILJS_SERVICE_ID";
-const EMAILJS_TEMPLATE_ID = "YOUR_EMAILJS_TEMPLATE_ID";
+const EMAILJS_PUBLIC_KEY = "wGaNkv0dAtrOCKBfv";
+const EMAILJS_SERVICE_ID = "service_mit5c2j";
+const EMAILJS_TEMPLATE_ID = "template_06sjaar";
 
 const IS_EMAILJS_CONFIGURED =
   !EMAILJS_PUBLIC_KEY.startsWith("YOUR_") &&
