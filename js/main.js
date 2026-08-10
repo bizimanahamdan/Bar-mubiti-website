@@ -474,15 +474,105 @@ function renderSettings(settings) {
   }
 }
 
+const WA_MESSAGES = {
+  en: {
+    fast: {
+      label: "Fast Booking",
+      text: "Hello Bar Mubiti! I am on your website and would like to reserve a table. I am looking to book for [Number] people on [Day/Date].",
+    },
+    vip: {
+      label: "VIP Vibe",
+      text: "Hi Bar Mubiti! I would like to inquire about reserving a VIP table or bottle service for an upcoming evening. Please let me know the available options.",
+    },
+    tonight: {
+      label: "Direct / Tonight",
+      text: "Hi Bar Mubiti! I'd like to check if you have any tables available for tonight.",
+    },
+  },
+  kin: {
+    fast: {
+      label: "Gufata ameza vuba",
+      text: "Muraho Bar Mubiti! Ndi kuri website yanyu, ndifuza gufata ameza y'abantu [Umubare] ku itariki ya [Itariki].",
+    },
+    vip: {
+      label: "VIP / Ibinyobwa by'icupa",
+      text: "Muraho Bar Mubiti! Ndifuza kumenya uko nafata ameza ya VIP. Mwambwira uko bimeze n'ibyo musaba?",
+    },
+    tonight: {
+      label: "Uyu munsi nijoro",
+      text: "Muraho Bar Mubiti! Ndifuza kumenya niba hari ameza mwasigaranye y'iri joro.",
+    },
+  },
+};
+
+let waPhoneNumber = "";
+
 function wireWhatsapp(business) {
-  const phone = (business.whatsapp_phone || FALLBACK.business.whatsapp_phone).replace(/\D/g, "");
-  const msg = encodeURIComponent("Hi Bar Mubiti! I'd like to know more / book a table.");
-  const url = `https://wa.me/${phone}?text=${msg}`;
+  waPhoneNumber = (business.whatsapp_phone || FALLBACK.business.whatsapp_phone).replace(/\D/g, "");
   ["heroWhatsapp", "quickWhatsapp", "stickyWhatsapp", "floatingWhatsapp"].forEach((id) => {
     const el = document.getElementById(id);
-    if (el) el.href = url;
+    if (!el) return;
+    el.href = "#";
+    el.addEventListener("click", (e) => {
+      e.preventDefault();
+      openWaModal();
+    });
   });
 }
+
+const waModalOverlay = document.getElementById("waModalOverlay");
+const waStepLang = document.getElementById("waStepLang");
+const waStepOptions = document.getElementById("waStepOptions");
+const waOptionsList = document.getElementById("waOptionsList");
+const waBackLabel = document.getElementById("waBackLabel");
+const waOptionsHeading = document.getElementById("waOptionsHeading");
+
+function openWaModal() {
+  waStepLang.hidden = false;
+  waStepOptions.hidden = true;
+  waModalOverlay.classList.add("open");
+}
+function closeWaModal() {
+  waModalOverlay.classList.remove("open");
+}
+function showWaOptions(lang) {
+  const labels = lang === "kin"
+    ? { back: "Subira inyuma", heading: "Ni iki wifuza kuvuga?" }
+    : { back: "Back", heading: "What would you like to say?" };
+  waBackLabel.textContent = labels.back;
+  waOptionsHeading.textContent = labels.heading;
+
+  const opts = WA_MESSAGES[lang];
+  waOptionsList.innerHTML = Object.entries(opts).map(([key, opt]) => `
+    <button type="button" class="wa-option-btn" data-key="${key}">
+      <div class="wa-option-title">${escapeHtml(opt.label)}</div>
+      <div class="wa-option-preview">${escapeHtml(opt.text)}</div>
+    </button>
+  `).join("");
+
+  waOptionsList.querySelectorAll(".wa-option-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const text = encodeURIComponent(opts[btn.dataset.key].text);
+      window.open(`https://wa.me/${waPhoneNumber}?text=${text}`, "_blank");
+      closeWaModal();
+    });
+  });
+
+  waStepLang.hidden = true;
+  waStepOptions.hidden = false;
+}
+
+document.querySelectorAll(".wa-choice-btn").forEach((btn) => {
+  btn.addEventListener("click", () => showWaOptions(btn.dataset.lang));
+});
+document.getElementById("waModalBack").addEventListener("click", () => {
+  waStepLang.hidden = false;
+  waStepOptions.hidden = true;
+});
+document.getElementById("waModalClose").addEventListener("click", closeWaModal);
+waModalOverlay.addEventListener("click", (e) => {
+  if (e.target === waModalOverlay) closeWaModal();
+});
 
 function escapeHtml(str) {
   return String(str ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
