@@ -68,7 +68,7 @@ async function init() {
   loadTestimonials();
   loadSocialSettings();
   wireReservationRealtime();
-  requestNotificationPermission();
+  wireNotificationPermissionButton();
 }
 
 function wireLogout() {
@@ -716,8 +716,9 @@ function wireReservationRealtime() {
       }
     )
     .subscribe((status) => {
-      if (status === "CHANNEL_ERROR") {
-        console.warn("Realtime reservation notifications couldn't connect. Make sure Realtime is enabled for reservation_requests in Supabase (see schema.sql).");
+      console.log("Realtime reservation channel status:", status);
+      if (status === "CHANNEL_ERROR" || status === "TIMED_OUT") {
+        console.warn("Realtime reservation notifications couldn't connect. Make sure Realtime is enabled for reservation_requests in Supabase (see schema.sql, or Database → Replication in the dashboard).");
       }
     });
 }
@@ -735,6 +736,29 @@ function requestNotificationPermission() {
   if (Notification.permission === "default") {
     Notification.requestPermission();
   }
+}
+
+function wireNotificationPermissionButton() {
+  if (!("Notification" in window)) return;
+  if (Notification.permission !== "default") return; // already granted or denied, nothing to ask
+  const bar = document.createElement("div");
+  bar.className = "banner show";
+  bar.style.cssText = "background:var(--surface-2);border:1px solid var(--line-strong);color:var(--text);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;";
+  bar.innerHTML = `
+    <span>🔔 Turn on notifications to get alerted the instant a new reservation comes in — even if this tab isn't in front.</span>
+    <button class="btn btn-primary btn-sm" id="enableNotifBtn" style="flex-shrink:0;">Enable notifications</button>
+  `;
+  document.querySelector(".main").insertBefore(bar, document.querySelector(".main").firstChild.nextSibling);
+  document.getElementById("enableNotifBtn").addEventListener("click", async () => {
+    const result = await Notification.requestPermission();
+    if (result === "granted") {
+      toast("Notifications enabled");
+      bar.remove();
+    } else {
+      toast("Notifications blocked — you can still change this in your browser's site settings.", "error");
+      bar.remove();
+    }
+  });
 }
 
 function showSystemNotification(title, body) {
